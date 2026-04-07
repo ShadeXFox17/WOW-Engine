@@ -13,7 +13,7 @@ namespace WorldsOfWonder.Engine
         private uint vbo;
         private uint vertexBufferSize;
 
-        private unsafe Model(float[] _vertexData)
+        public unsafe Model(float[] _vertexData)
         {
             vertexBufferSize = (uint)_vertexData.Length;
 
@@ -37,7 +37,41 @@ namespace WorldsOfWonder.Engine
                 glVertexAttribPointer(1, 3, GL_FLOAT, false, 6 * sizeof(float), (void*)(3 * sizeof(float)));
                 glEnableVertexAttribArray(1);
 
+                // XYZ, then RGB. XYZ, then RGB. XYZ, then RGB. XYZ, then RGB. XYZ, then RGB. XYZ, then RGB.
+
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+                glBindVertexArray(0);
+
             }
+        }
+
+        ~Model()
+        {
+            Delete();
+        }
+
+        public void BindVAO()
+        {
+            glBindVertexArray(vao);
+        }
+
+        public void UnBindVAO()
+        {
+            glBindVertexArray(0);
+        }
+
+        public uint GetVertexBufferSize()
+        {
+            return vertexBufferSize;
+        }
+
+        public void Delete()
+        {
+            glDeleteBuffer(vbo);
+            glDeleteVertexArray(vao);
+
+            vao = 0;
+            vbo = 0;
         }
     }
 }
